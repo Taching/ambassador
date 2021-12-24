@@ -1,8 +1,9 @@
 import { Request, Response } from 'express';
-import { getRepository } from 'typeorm';
+import { getRepository, Repository } from 'typeorm';
 import { User } from '../entity/user.entity';
 import bcryptjs from 'bcryptjs';
 import { sign, verify } from 'jsonwebtoken';
+
 export const Register = async (req: Request, res: Response) => {
   const { password, password_confirm, ...body } = req.body;
   if (password !== password_confirm) {
@@ -60,4 +61,28 @@ export const Logout = async (req: Request, res: Response) => {
   res.send({
     message: 'success'
   });
+};
+
+export const UpdateInfo = async (req: Request, res: Response) => {
+  const user = req['user'];
+
+  const repository = getRepository(User);
+
+  await repository.update(user.id, req.body);
+
+  res.send(await repository.findOne(user.id));
+};
+
+export const UpdatePassword = async (req: Request, res: Response) => {
+  const user = req['user'];
+
+  if (req.body.password !== req.body.password_confirm) {
+    return res.status(400).send({
+      message: 'Password is do not match'
+    });
+  }
+  await getRepository(User).update(user.id, {
+    password: await bcryptjs.hash(req.body.password, 10)
+  });
+  res.send(user);
 };
