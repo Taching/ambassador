@@ -13,7 +13,7 @@ createConnection().then(async () => {
     await repositroy.save({
       code: faker.random.alphaNumeric(6),
       user,
-      price: [randomInt(1,20)]
+      price: [randomInt(1, 20)]
     });
   }
 

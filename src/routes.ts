@@ -17,6 +17,7 @@ import {
   DeleteProduct
 } from './controller/product.controller';
 import { Links } from './controller/link.controller';
+import { Orders } from './controller/order.controller';
 
 export const routes = (router: Router) => {
   router.post('/api/admin/register', Register);
@@ -33,5 +34,6 @@ export const routes = (router: Router) => {
   router.put('/api/admin/products/:id', AuthMiddleware, UpdateProduct);
   router.delete('/api/admin/products/:id', AuthMiddleware, DeleteProduct);
 
-  router.get('/api/admin/users/:id/links', AuthMiddleware, Links)
+  router.get('/api/admin/users/:id/links', AuthMiddleware, Links);
+  router.get('/api/admin/orders', AuthMiddleware, Orders);
 };
