@@ -7,6 +7,7 @@
     "start": "nodemon src/index.ts",
     "seed:ambassadors": "ts-node src/seeders/ambassador.seeder.ts",
     "seed:products": "ts-node src/seeders/product.seeder.ts",
+    "seed:links": "ts-node src/seeders/link.seeder.ts",
 
     "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write"
   },
