@@ -8,7 +8,7 @@ import {
 } from './controller/auth.controller';
 import { AuthMiddleware } from './middleware/auth.middleware';
 import { UpdatePassword } from './controller/auth.controller';
-import { Ambassadors } from './controller/user.controller';
+import { Ambassadors, Rankings } from './controller/user.controller';
 import {
   Products,
   CreateProduct,
@@ -18,7 +18,7 @@ import {
   ProductsFrontend,
   ProductsBackend
 } from './controller/product.controller';
-import { Links } from './controller/link.controller';
+import { CreateLink, Links, Stats } from './controller/link.controller';
 import { Orders } from './controller/order.controller';
 
 export const routes = (router: Router) => {
@@ -48,4 +48,8 @@ export const routes = (router: Router) => {
 
   router.get('/api/ambassador/products/frontend', ProductsFrontend);
   router.get('/api/ambassador/products/backend', ProductsBackend);
+  router.post('/api/ambassador/links', AuthMiddleware, CreateLink);
+  router.get('/api/ambassador/stats', AuthMiddleware, Stats);
+
+  router.get('/api/ambassador/rankings', AuthMiddleware, Rankings);
 };
