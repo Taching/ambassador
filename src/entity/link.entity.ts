@@ -5,10 +5,12 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn
 } from 'typeorm';
 import { User } from './user.entity';
 import { Product } from './product.entity';
+import { Order } from './order.entity';
 
 @Entity()
 export class Link {
@@ -29,4 +31,13 @@ export class Link {
     inverseJoinColumn: { name: 'product_id', referencedColumnName: 'id' }
   })
   product: Product[];
+
+  @OneToMany(() => Order, (order) => order.link, {
+    createForeignKeyConstraints: false
+  })
+  @JoinColumn({
+    referencedColumnName: 'code',
+    name: 'code'
+  })
+  orders: Order[];
 }

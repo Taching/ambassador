@@ -3,6 +3,7 @@ import { getRepository, Repository } from 'typeorm';
 import { User } from '../entity/user.entity';
 import bcryptjs from 'bcryptjs';
 import { sign, verify } from 'jsonwebtoken';
+import { Order } from '../entity/order.entity';
 
 export const Register = async (req: Request, res: Response) => {
   const { password, password_confirm, ...body } = req.body;
@@ -15,7 +16,7 @@ export const Register = async (req: Request, res: Response) => {
   const user = await getRepository(User).save({
     ...body,
     password: await bcryptjs.hash(password, 10),
-    is_ambassador: false
+    is_ambassador: req.path === '/api/ambassador/register'
   });
   delete user.password;
   res.send(user);
@@ -25,7 +26,7 @@ export const Login = async (req: Request, res: Response) => {
   const user = await getRepository(User).findOne(
     { email: req.body.email },
     {
-      select: ['id', 'password']
+      select: ['id', 'password', 'is_ambassador']
     }
   );
 
@@ -40,9 +41,17 @@ export const Login = async (req: Request, res: Response) => {
       message: 'invalid credentials'
     });
   }
+  const adminLogin = req.path === '/api/admin/login';
+
+  if (user.is_ambassador && adminLogin) {
+    return res.status(401).send({
+      message: 'unauthorized'
+    });
+  }
   const token = sign(
     {
-      id: user.id
+      id: user.id,
+      scope: adminLogin ? 'admin' : 'ambassador'
     },
     process.env.SECRET_KEY
   );
@@ -52,7 +61,26 @@ export const Login = async (req: Request, res: Response) => {
 };
 
 export const AuthenticatedUser = async (req: Request, res: Response) => {
-  res.send(req['user']);
+  const user = req['user'];
+
+  if (req.path == '/api/admin/user') {
+    return res.send(user);
+  }
+
+  const orders = await getRepository(Order).find({
+    where: {
+      user_id: user.id,
+      complete: true
+    },
+    relations: ['order_items']
+  });
+
+  user.revenue = orders.reduce(
+    (sum, order) => sum + order.ambassador_revenue,
+    0
+  );
+
+  res.send(user);
 };
 
 export const Logout = async (req: Request, res: Response) => {

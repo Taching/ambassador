@@ -16,7 +16,20 @@ export const AuthMiddleware = async (
         message: 'unauthenticated'
       });
     }
-    req['user'] = await getRepository(User).findOne(payload.id);
+    const is_ambassador = req.path.indexOf('api/ambassador') >= 0;
+
+    const user = await getRepository(User).findOne(payload.id);
+
+    if (
+      (is_ambassador && payload.scope !== 'ambassador') ||
+      (!is_ambassador && payload.scope !== 'admin')
+    ) {
+      return res.status(401).send({
+        message: 'unauthenticated'
+      });
+    }
+
+    req['user'] = user;
     next();
   } catch (e) {
     return res.status(401).send({

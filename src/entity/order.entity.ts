@@ -2,10 +2,13 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn
 } from 'typeorm';
 import { OrderItem } from './order-item.entity';
+import { Link } from './link.entity';
+import { JoinColumn } from 'typeorm';
 
 @Entity()
 export class Order {
@@ -54,11 +57,24 @@ export class Order {
   @OneToMany(() => OrderItem, (orderItem) => orderItem.order)
   order_items: OrderItem[];
 
+  @ManyToOne(() => Link, (link) => link.orders, {
+    createForeignKeyConstraints: false
+  })
+  @JoinColumn({
+    referencedColumnName: 'code',
+    name: 'code'
+  })
+  link: Link;
+
   get name(): string {
     return this.first_name + ' ' + this.last_name;
   }
 
   get total(): number {
     return this.order_items.reduce((s, item) => s + item.admin_revenue, 0);
+  }
+
+  get ambassador_revenue(): number {
+    return this.order_items.reduce((s, item) => s + item.ambassador_revenue, 0);
   }
 }
