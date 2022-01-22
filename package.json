@@ -9,6 +9,7 @@
     "seed:products": "ts-node src/seeders/product.seeder.ts",
     "seed:links": "ts-node src/seeders/link.seeder.ts",
     "seed:orders": "ts-node src/seeders/order.seeder.ts",
+    "update:ranking": "ts-node src/seeders/rankings.ts",
     "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write"
   },
   "keywords": [],
