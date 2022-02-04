@@ -23,15 +23,17 @@ createConnection().then(async () => {
       relations: ['order_items']
     });
 
-    const revenue = orders.reduce((sum, order) => sum + order.ambassador_revenue, 0);
-
+    const revenue = orders.reduce(
+      (sum, order) => sum + order.ambassador_revenue,
+      0
+    );
 
     // stored and sorting in redis
     // zAdd and zREVRANGEBYSCORE
     await client.zAdd('rankings', {
-        value: ambassadors[i].name,
-        score: revenue
-    })
+      value: ambassadors[i].name,
+      score: revenue
+    });
   }
 
   process.exit();

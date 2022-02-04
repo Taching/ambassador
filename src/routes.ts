@@ -18,8 +18,17 @@ import {
   ProductsFrontend,
   ProductsBackend
 } from './controller/product.controller';
-import { CreateLink, Links, Stats } from './controller/link.controller';
-import { Orders } from './controller/order.controller';
+import {
+  CreateLink,
+  GetLink,
+  Links,
+  Stats
+} from './controller/link.controller';
+import {
+  ConfirmOrder,
+  CreateOrder,
+  Orders
+} from './controller/order.controller';
 
 export const routes = (router: Router) => {
   // Admin
@@ -50,6 +59,9 @@ export const routes = (router: Router) => {
   router.get('/api/ambassador/products/backend', ProductsBackend);
   router.post('/api/ambassador/links', AuthMiddleware, CreateLink);
   router.get('/api/ambassador/stats', AuthMiddleware, Stats);
-
   router.get('/api/ambassador/rankings', AuthMiddleware, Rankings);
+
+  router.get('/api/checkout/links/:code', GetLink);
+  router.post('api/checkout/order', CreateOrder);
+  router.post('api/checkout/confirm', ConfirmOrder);
 };

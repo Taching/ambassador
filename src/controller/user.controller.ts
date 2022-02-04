@@ -14,18 +14,26 @@ export const Ambassadors = async (req: Request, res: Response) => {
 export const Rankings = async (req: Request, res: Response) => {
   // https://redis.io/commands/ZREVRANGEBYSCORE
   // sendCommand directly to redis and implementing ZREVRANGEBYSCORE
-  const result: string[] = await client.sendCommand(['ZREVRANGEBYSCORE', 'rankings', '+inf','-inf', 'WITHSCORES'])
+  const result: string[] = await client.sendCommand([
+    'ZREVRANGEBYSCORE',
+    'rankings',
+    '+inf',
+    '-inf',
+    'WITHSCORES'
+  ]);
 
   let name;
-  res.send(result.reduce((order, revenue) => {
-    if(isNaN(parseInt(revenue))) {
-      name = revenue;
-      return order;
-    } else {
-      return {
-        ...order,
-        [name]: parseInt(revenue)
+  res.send(
+    result.reduce((order, revenue) => {
+      if (isNaN(parseInt(revenue))) {
+        name = revenue;
+        return order;
+      } else {
+        return {
+          ...order,
+          [name]: parseInt(revenue)
+        };
       }
-    }
-  }, {}))
+    }, {})
+  );
 };
